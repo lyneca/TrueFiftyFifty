@@ -1,0 +1,103 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <link href="{% static "global.css" %}" rel="stylesheet" type="text/css">
+    <title></title>
+</head>
+<body>
+<form action="{% url 'links:post' %}" method="post">
+    <br>
+    {% csrf_token %}
+    <table>
+        <tr>
+            <td>
+                <input id="id_display_text" placeholder="Link display text" class="full-width" maxlength="200"
+                       name="display_text"
+                       type="text"/>
+            </td>
+            <td>
+                <input id="id_address" placeholder="Address" class="full-width" maxlength="50" name="address"
+                       type="text"/>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <input placeholder="Risk" id="slider" name='risk' max="5" min="-5" step="1" type="range" list="volsettings">
+                <datalist id=volsettings>
+                    <option>-5</option>
+                    <option>-4</option>
+                    <option>-2</option>
+                    <option>-3</option>
+                    <option>-1</option>
+                    <option>0</option>
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                </datalist>
+        </tr>
+        <tr>
+            <td colspan="4">
+                <div class="full-width" align="center">
+                    <input type="submit" class="half-width" value="Post">
+                </div>
+            </td>
+        </tr>
+    </table>
+</form>
+<div id="title">[50/50]</div>
+<h1>Originally on <a href="http://reddit.com/r/FiftyFifty">Reddit</a></h1>
+
+<div id="sidebar">
+    <div class="sidebar-container">
+        Newest
+    </div>
+    <div class="sidebar-container">
+        Most Liked
+    </div>
+    <div class="sidebar-container">
+        Least Liked
+    </div>
+    <div class="sidebar-container">
+        Today
+    </div>
+    <div class="sidebar-container">
+        Yesterday
+    </div>
+    <div class="sidebar-container">
+        This Week
+    </div>
+    <a href="">
+        <div class="sidebar-container no-link-color">
+            This Month
+        </div>
+    </a>
+    <a href="">
+        <div class="sidebar-container no-link-color last">
+            Liked by Mods
+        </div>
+    </a>
+
+</div>
+{% for link in links %}
+    {% with link|random as rlink %}
+        {% with link|first as good %}
+            {% with link|last as bad %}
+                {% if link == links|last %}
+                    <div class="post-container-last">
+                        <a href="{{ rlink.address }}">{{ good.display }} | {{ bad.display }}</a>
+                    </div>
+                {% else %}
+                    <div class="post-container">
+                        <a href="{{ rlink.address }}">{{ good.display }} | {{ bad.display }}</a>
+                    </div>
+                {% endif %}
+            {% endwith %}
+        {% endwith %}
+    {% endwith %}
+{% endfor %}
+</body>
+</html>
